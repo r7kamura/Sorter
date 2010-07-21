@@ -22,40 +22,36 @@ sub get_values {
 
 sub sort {
   my $self = shift;
-  my @array = $self->get_values;
-  $self->_quick_sort(0, $#array) if ($#array) > 0;
+  
+  return if $self->get_values < 1;
+  
+  my $pivot = $self->_pivot;
+  my $left = __PACKAGE__->new;
+  my $right = __PACKAGE__->new;
+  $left->set_values($self->_partition($pivot, -1));
+  $right->set_values($self->_partition($pivot, 1));
+  $left->sort;
+  $right->sort;
+  $self->set_values($left->get_values, $pivot, $right->get_values);
 }
 
-sub _quick_sort {
-  my $self = shift;
-  my ($left, $right) = @_;
+sub _partition {
+  my ($self, $pivot, $comp) = @_;
   
-  if ($left < $right) {
-    my ($i, $j) = ($left, $right);
-    my $array = $self->{values};
-    my $center = int(($left + $right) / 2);
-    my $pivot = $array->[$center];
-    
-    while (1) {
-      $i++ while($array->[$i] < $pivot);
-      $j-- while($array->[$j] > $pivot);
-      last if ($i >= $j);
-      $self->_swap($i, $j);
-      $i++; $j--;
-    }
-    
-    $self->_quick_sort($left, $i - 1)  if ($left < $i-1);
-    $self->_quick_sort($j + 1, $right) if ($j+1 < $right);
+  if ($comp < 0) {
+    grep { $_ < $pivot } $self->get_values;
+  }
+  else {
+    grep { $_ >= $pivot } $self->get_values;
   }
 }
 
-sub _swap {
+sub _pivot {
   my $self = shift;
-  my ($i, $j) = @_;
-  my $array = $self->{values};
-  my $tmp = $array->[$i];
-  $array->[$i] = $array->[$j];
-  $array->[$j] = $tmp;
+  my @values = $self->get_values;
+  my $pivot = shift @values;
+  $self->set_values(@values);
+  $pivot;
 }
 
 1;
