@@ -12,23 +12,21 @@ sub new {
 
 sub set_values {
   my $self = shift;
-  my @values = @_;
-  $self->{values} = \@values;
+  $self->{values} = [@_];
 }
 
 sub get_values {
   my $self = shift;
-  my $array = $self->{values};
-  return @{$array};
+  @{$self->{values}};
 }
 
 sub sort {
   my $self = shift;
-  my $array = $self->{values};
-  $self->quick_sort(0, $#{$array}) if ($#{$array}) > 0;
+  my @array = $self->get_values;
+  $self->_quick_sort(0, $#array) if ($#array) > 0;
 }
 
-sub quick_sort {
+sub _quick_sort {
   my $self = shift;
   my ($left, $right) = @_;
   
@@ -42,16 +40,16 @@ sub quick_sort {
       $i++ while($array->[$i] < $pivot);
       $j-- while($array->[$j] > $pivot);
       last if ($i >= $j);
-      $self->swap($i, $j);
+      $self->_swap($i, $j);
       $i++; $j--;
     }
     
-    $self->quick_sort($left, $i - 1)  if ($left < $i-1);
-    $self->quick_sort($j + 1, $right) if ($j+1 < $right);
+    $self->_quick_sort($left, $i - 1)  if ($left < $i-1);
+    $self->_quick_sort($j + 1, $right) if ($j+1 < $right);
   }
 }
 
-sub swap {
+sub _swap {
   my $self = shift;
   my ($i, $j) = @_;
   my $array = $self->{values};
