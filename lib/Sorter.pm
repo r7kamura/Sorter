@@ -38,11 +38,10 @@ sub sort {
   $self->set_values($l->get_values, $pivot, $r->get_values);
 }
 
-
 sub _pivot {
   my $self = shift;
   my @values = $self->get_values;
-  my $pivot = shift @values;
+  my $pivot = splice(@values, int(@values/2), 1);
   $self->set_values(@values);
   $pivot;
 }
