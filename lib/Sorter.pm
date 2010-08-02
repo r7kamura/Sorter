@@ -1,6 +1,8 @@
 package Sorter;
 use strict;
 use warnings;
+use base qw(Class::Accessor::Fast);
+__PACKAGE__->mk_accessors(qw/values/);
 
 sub new {
   bless { values => [] }, shift;
@@ -8,12 +10,12 @@ sub new {
 
 sub set_values {
   my $self = shift;
-  $self->{values} = [@_];
+  $self->values([@_]);
   $self;
 }
 
 sub get_values {
-  @{shift->{values}};
+  @{shift->values};
 }
 
 sub sort {
